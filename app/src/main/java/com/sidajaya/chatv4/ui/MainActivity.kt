@@ -9,11 +9,8 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.compose.material3.MaterialTheme
 import com.sidajaya.chatv4.data.*
 import com.sidajaya.chatv4.util.Constants
-
 class MainActivity: ComponentActivity(){
     override fun onCreate(savedInstanceState: Bundle?){
         super.onCreate(savedInstanceState)
@@ -26,7 +23,6 @@ class MainActivity: ComponentActivity(){
         }
     }
 }
-
 @Composable fun LoginScreen(onOk:()->Unit){
     var u by remember{ mutableStateOf("") }; var p by remember{ mutableStateOf("") }
     Column(Modifier.fillMaxSize().padding(24.dp), verticalArrangement = Arrangement.Center){
@@ -37,25 +33,16 @@ class MainActivity: ComponentActivity(){
         OutlinedTextField(value=p, onValueChange={p=it}, label={Text("Password")}, modifier=Modifier.fillMaxWidth())
         Spacer(Modifier.height(16.dp))
         Button(onClick={ onOk() }, modifier=Modifier.fillMaxWidth()){ Text("Masuk") }
-        Text("Login pakai akun yang sama di ai.sidajaya.shop", style=MaterialTheme.typography.bodySmall)
+        Text("Pakai akun yang sama di ai.sidajaya.shop", style=MaterialTheme.typography.bodySmall)
     }
 }
-
 @Composable fun ChatScreen(sm: SessionManager){
-    // repo akan pakai baseUrl dari sm; untuk MVP pakai default Constants.DEFAULT_BASE_URL
-    // Inisialisasi sederhana tanpa DI: buat ApiService langsung
-    val repo = remember{
-        val api = ApiFactory(sm).create(Constants.DEFAULT_BASE_URL)
-        ChatRepository(api)
-    }
+    val repo = remember{ val api = ApiFactory(sm).create(sm.baseUrl()); ChatRepository(api) }
     val vm: ChatViewModel = remember{ ChatViewModel(repo) }
     var input by remember{ mutableStateOf("") }
     Column(Modifier.fillMaxSize()){
-        // Top bar mode
         Row(Modifier.fillMaxWidth().padding(8.dp), horizontalArrangement = Arrangement.spacedBy(6.dp)){
-            Constants.MODES.forEach{ m ->
-                FilterChip(selected = vm.mode==m, onClick={ vm.setMode(m) }, label={Text(m)})
-            }
+            Constants.MODES.forEach{ m -> FilterChip(selected = vm.mode==m, onClick={ vm.setMode(m) }, label={Text(m)}) }
             Spacer(Modifier.weight(1f))
             TextButton(onClick={ vm.newChat() }){ Text("Baru") }
         }
