@@ -1,0 +1,1 @@
+<resources><style name="Theme.Sidajaya" parent="Theme.Material3.DayNight.NoActionBar"><item name="colorPrimary">#8fb4ff</item><item name="android:statusBarColor">@color/bg</item></style></resources>
